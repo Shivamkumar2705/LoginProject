@@ -1,23 +1,20 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const connectDB = require('./config/db');
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
 
-require('dotenv').config();
-const PORT = process.env.PORT || 4000;
+// Connect Database
+connectDB();
 
-//cookie-parser - what is this and why we need this ?
+// Init Middleware
+app.use(express.json({ extended: false }));
+app.use(cors());
 
-app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000" }));
+// Define Routes
+app.use('/api/v1', require('./routes/api'));
 
-require("./config/database").connect();
+const PORT = process.env.PORT || 5000;
 
-//route import and mount
-const user = require("./routes/user");
-app.use("/api/v1", user);
-
-//actuivate
-
-app.listen(PORT, () => {
-    console.log(`App is listening at ${PORT}`);
-})
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
